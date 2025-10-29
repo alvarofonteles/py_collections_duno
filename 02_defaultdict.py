@@ -12,6 +12,7 @@ print(config['css'])  # 00f
 
 # %%
 from collections import defaultdict
+from math import dist
 from typing import Any, cast
 
 # Anonima
@@ -61,4 +62,72 @@ print(
 print(config2['css'])  # 00a
 print(config2['html'])  # <body><body/>
 
+# %%
+'''
+Caso de Uso Real do defaultdict()
+
+O que é? 
+Um dicionário que automaticamente cria valores padrão para chaves inexistentes!
+Por que usar?
+Elimina verificações manuais `if chave not in dict` e deixa o código mais limpo e Pythonico.
+
+Em vez de:
+if chave not in meu_dict:
+    meu_dict[chave] = []
+meu_dict[chave].append(valor)
+
+Use:
+meu_dict = defaultdict(list)
+meu_dict[chave].append(valor)  # Mais limpo e Pythonico!
+'''
+
+# %%
+# CONTAGEM - muito comum!
+texto = 'tudo bem, já dar tudo certo, Deus é Deus e conosco, Amém'
+contador = defaultdict(int)
+for palavra in texto.split():
+    contador[palavra] += 1  # Primeiro acesso cria com 0, depois incrementa
+print(
+    dict(contador)
+)  # {'tudo': 2, 'bem,': 1, 'já': 1, 'dar': 1, 'certo,': 1, 'Deus': 2, 'é': 1, 'e': 1, 'conosco,': 1, 'Amém': 1}
+
+
+# %%
+# AGRUPAMENTO
+class Pessoa:
+    def __init__(self, nome, departamento) -> None:
+        self.nome = nome
+        self.departamento = departamento
+
+
+pessoas = [
+    Pessoa('Eduardo', 'Python'),
+    Pessoa('Duno', 'Professora'),
+]
+
+grupos = defaultdict(list)
+for pessoa in pessoas:
+    grupos[pessoa.departamento].append(pessoa.nome)  # Cria lista se não existir
+print(dict(grupos))  # {'Python': ['Eduardo'], 'Professora': ['Duno']}
+
+
+# %%
+# ACUMULADORES
+class Venda:
+    def __init__(self, valor, categoria) -> None:
+        self.valor = valor
+        self.categoria = categoria
+
+
+vendas = [
+    Venda(1035, 'Cama'),
+    Venda(2057, 'Cama'),
+    Venda(2454.25, 'Televisao'),
+    Venda(3454.25, 'Televisao'),
+]
+
+total_por_categoria = defaultdict(float)
+for venda in vendas:
+    total_por_categoria[venda.categoria] += venda.valor  # Cria com 0.0
+print(dict(total_por_categoria))
 # %%
