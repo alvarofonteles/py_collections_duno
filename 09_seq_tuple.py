@@ -2,6 +2,7 @@
 
 # %%
 from collections.abc import Sequence
+from itertools import chain
 
 
 class MinhaTupla(Sequence):
@@ -107,3 +108,104 @@ print(ex4)  # Sua TuplaSet (1, 2, 3, 4, 5, 6, 8, 10)
 
 for x in ex4:
     print(x)  # 1, 2, 3, 4, 5, 6, 8, 10
+
+# %%
+
+
+class MinhaTuplaFlat(Sequence):
+    def __init__(self, tupla_):
+        self._data = tuple(sum(tupla_, []))
+
+    def __getitem__(self, idx):
+        return self._data[idx]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return f'Sua TuplaFlat {self._data}'
+
+
+# Comportamento Flat Normal (Achatar)
+ex5 = [1, 2, 3, 4, 5]
+ex6 = [6, 7, 8, 9]
+
+print([ex5, ex6])  # [[1, 2, 3, 4, 5], [6, 7, 8, 9]]
+
+print(
+    sum([ex5, ex6], [])
+)  # [1, 2, 3, 4, 5, 6, 7, 8, 9]  Achata listas aninhadas (remove estrutura)
+
+# Comportamento Simulado TuplaFlat
+ex7 = MinhaTuplaFlat([[1, 2, 3, 4, 5], [6, 7, 8, 9]])
+print(ex7)  # Sua TuplaFlat (1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+# %%
+# Exemplos alternativos reais e prático sem Sum()
+'''
+# 1. List comprehension
+[item for sublist in [[1,2],[3,4]] for item in sublist]
+
+# 2. Chain "conecta" múltiplas listas
+from itertools import chain
+listas = [[1, 2], [3, 4], [5, 6]]
+resultado = list(chain(*listas))
+print(resultado)  # [1, 2, 3, 4, 5, 6]
+'''
+
+
+# %%
+class MinhaTuplaFlatChain(Sequence):
+    def __init__(self, tupla_):
+        self._data = tuple(chain(*tupla_))  # Flat Correto com Chain!
+
+    def __getitem__(self, idx):
+        return self._data[idx]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return f'Sua TuplaFlatChain {self._data}'
+
+
+# Comportamento TuplaFlat
+# Chain "conecta" múltiplas listas
+ex7 = MinhaTuplaFlatChain([[1, 2, 3, 4, 5], [6, 7, 8, 9]])
+print(ex7)  # Sua TuplaFlat (1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+# %%
+'''
+from itertools import chain
+
+# Flat instantâneo:
+chain(*[[1,2], [3,4]])  # → [1, 2, 3, 4]
+
+# Ou com from_iterable (mais legível):
+chain.from_iterable([[1,2], [3,4]])  # → [1, 2, 3, 4]
+'''
+
+
+# %%
+class MinhaTuplaFlatSize(Sequence):
+    def __init__(self, tupla_):
+        self._data = tuple(tupla_)
+
+    def __getitem__(self, idx):
+        return self._data[idx]
+
+    def __len__(self):
+        return len(tuple(sum(self._data, [])))  # somará os itens
+
+    def __repr__(self):
+        return f'Sua TuplaFlatSize {self._data}'
+
+
+ex8 = MinhaTuplaFlatSize([[1, 2, 3, 4, 5], [6, 7, 8, 9]])
+print(ex8)  # Sua TuplaFlatSize ([1, 2, 3, 4, 5], [6, 7, 8, 9])
+
+
+print(len(ex8))  # 9 soma os itens
+print(len(ex8._data))  # 2 conta as listas
+
+# %%
