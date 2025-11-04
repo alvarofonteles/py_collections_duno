@@ -208,4 +208,38 @@ print(ex8)  # Sua TuplaFlatSize ([1, 2, 3, 4, 5], [6, 7, 8, 9])
 print(len(ex8))  # 9 soma os itens
 print(len(ex8._data))  # 2 conta as listas
 
+
 # %%
+# Functor = "Container que pode ser mapeado"
+class MinhaTuplaFunctor(Sequence):
+    def __init__(self, tuple_) -> None:
+        self._data = tuple(tuple_)
+
+    def __getitem__(self, idx):
+        return self._data[idx]
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __repr__(self) -> str:
+        return f'Sua TuplaFunctor {self._data}'
+
+    def fmap(self, function):
+        return MinhaTuplaFunctor(function(x) for x in self._data)
+
+
+ex9 = MinhaTuplaFunctor([1, 2, 3, 4, 5, 6])
+print(ex9)  # Sua TuplaFunctor (1, 2, 3, 4, 5, 6)
+
+# Padrão Map
+ex10 = [1, 2, 3, 4, 5, 6]
+ret1 = list(map(lambda x: x**2, ex10))
+print(ret1)  # [1, 4, 9, 16, 25, 36] (lista plana)
+
+# Simulando o map padrão, com function fmap
+ret2 = ex9.fmap(lambda x: x**2)
+print(ret2)  # Sua TuplaFunctor (1, 4, 9, 16, 25, 36) (mantém o container)
+
+# Extra: Pipeline funcional estilo Haskell:
+ret3 = ex9.fmap(lambda x: x * 2).fmap(lambda x: x + 1)
+print(ret3)  # Sua TuplaFunctor (3, 5, 7, 9, 11, 13)
